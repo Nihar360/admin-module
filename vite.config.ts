@@ -62,10 +62,6 @@ export default defineConfig({
       protocol: "wss",
     },
     // 👇 Add this block
-    allowedHosts: [
-      "da174883-97a5-4f38-b71c-2054efa3346b-00-2wpinlxrptbp2.sisko.replit.dev",
-      // or use '*' if you want to allow all hosts during dev
-      // '*'
-    ],
+    allowedHosts: ["*"],
   },
 });
