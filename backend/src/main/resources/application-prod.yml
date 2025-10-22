@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: INFO
+    com.ecommerce.admin: INFO
+    org.springframework.security: WARN
+
+server:
+  port: ${PORT:8080}
+  error:
+    include-message: false
+    include-binding-errors: false
+    include-stacktrace: never
+
+app:
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS}

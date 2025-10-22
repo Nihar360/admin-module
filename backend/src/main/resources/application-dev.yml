@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    root: DEBUG
+    com.ecommerce.admin: DEBUG
+    org.springframework.security: DEBUG
+
+server:
+  port: 8080
+
+app:
+  cors:
+    allowed-origins: http://localhost:5000,http://127.0.0.1:5000,https://*.replit.dev

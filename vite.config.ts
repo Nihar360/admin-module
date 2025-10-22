@@ -62,6 +62,9 @@ export default defineConfig({
       protocol: "wss",
     },
     // 👇 Add this block
-    allowedHosts: ["*"],
+    allowedHosts: [
+      "83da43ed-65f1-47df-a487-5f8b449dcc45-00-3hwaxtiscjd19.spock.replit.dev",
+      "*.replit.dev",
+    ],
   },
 });
