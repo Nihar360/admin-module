@@ -27,4 +27,15 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
         @Param("startDate") LocalDateTime startDate,
         @Param("endDate") LocalDateTime endDate
     );
+    
+    @Query("SELECT p.id, p.name, p.thumbnail, " +
+           "SUM(oi.quantity) as totalQuantity, " +
+           "SUM(oi.total) as totalRevenue " +
+           "FROM OrderItem oi " +
+           "JOIN oi.product p " +
+           "JOIN oi.order o " +
+           "WHERE o.status != 'CANCELLED' " +
+           "GROUP BY p.id, p.name, p.thumbnail " +
+           "ORDER BY SUM(oi.quantity) DESC")
+    List<Object[]> findTopSellingProducts(org.springframework.data.domain.Pageable pageable);
 }
