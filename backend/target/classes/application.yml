@@ -30,11 +30,6 @@ spring:
         order_updates: true
     open-in-view: false
   
-  security:
-    user:
-      name: admin
-      password: admin123
-  
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -50,9 +45,9 @@ server:
     context-path: /api/v1
 
 jwt:
-  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
-  expiration: 86400000
-  refresh-expiration: 604800000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
 logging:
   level:
