@@ -203,6 +203,20 @@ public class ProductService {
         return "PRD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
     
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getLowStockProducts() {
+        log.info("Fetching low stock products (stock < 10)");
+        List<Product> lowStockProducts = productRepository.findByStockQuantityLessThan(10);
+        
+        List<ProductResponse> responses = new ArrayList<>();
+        for (Product product : lowStockProducts) {
+            responses.add(mapToProductResponse(product));
+        }
+        
+        log.info("Found {} low stock products", responses.size());
+        return responses;
+    }
+    
     private ProductResponse mapToProductResponse(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())

@@ -41,49 +41,35 @@ public class CategoryController {
     @PostMapping
     @LogActivity(action = "CREATE_CATEGORY", resourceType = "CATEGORY")
     @Operation(summary = "Create new category", description = "Create a new product category")
-    public ResponseEntity<ApiResponse<Category>> createCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<ApiResponse> createCategory(@Valid @RequestBody Category category) {
         Category created = categoryService.createCategory(category);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(ApiResponse.<Category>builder()
-                .success(true)
-                .message("Category created successfully")
-                .data(created)
-                .build());
+            .body(ApiResponse.success("Category created successfully", created));
     }
 
     @PutMapping("/{id}")
     @LogActivity(action = "UPDATE_CATEGORY", resourceType = "CATEGORY")
     @Operation(summary = "Update category", description = "Update an existing product category")
-    public ResponseEntity<ApiResponse<Category>> updateCategory(
+    public ResponseEntity<ApiResponse> updateCategory(
             @PathVariable Long id,
             @Valid @RequestBody Category category) {
         Category updated = categoryService.updateCategory(id, category);
-        return ResponseEntity.ok(ApiResponse.<Category>builder()
-            .success(true)
-            .message("Category updated successfully")
-            .data(updated)
-            .build());
+        return ResponseEntity.ok(ApiResponse.success("Category updated successfully", updated));
     }
 
     @DeleteMapping("/{id}")
     @LogActivity(action = "DELETE_CATEGORY", resourceType = "CATEGORY")
     @Operation(summary = "Delete category", description = "Delete a product category")
-    public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok(ApiResponse.<Void>builder()
-            .success(true)
-            .message("Category deleted successfully")
-            .build());
+        return ResponseEntity.ok(ApiResponse.success("Category deleted successfully"));
     }
 
     @GetMapping("/{id}/products/count")
     @Operation(summary = "Get product count for category", description = "Get the number of products in a category")
-    public ResponseEntity<ApiResponse<Long>> getProductCountByCategory(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> getProductCountByCategory(@PathVariable Long id) {
         Long count = categoryService.getProductCountByCategory(id);
-        return ResponseEntity.ok(ApiResponse.<Long>builder()
-            .success(true)
-            .data(count)
-            .build());
+        return ResponseEntity.ok(ApiResponse.success("Product count retrieved successfully", count));
     }
 
     @GetMapping("/active")

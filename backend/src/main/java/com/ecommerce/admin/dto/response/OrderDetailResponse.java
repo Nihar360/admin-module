@@ -41,35 +41,3 @@ public class OrderDetailResponse {
     private LocalDateTime updatedAt;
 }
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-class OrderItemResponse {
-    private Long id;
-    private Long productId;
-    private String productName;
-    private String thumbnail;
-    private Integer quantity;
-    private BigDecimal price;
-    private BigDecimal discount;
-    private BigDecimal total;
-    private String size;
-    private String color;
-}
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-class AddressResponse {
-    private Long id;
-    private String fullName;
-    private String mobile;
-    private String addressLine1;
-    private String addressLine2;
-    private String city;
-    private String state;
-    private String pincode;
-    private String country;
-}
