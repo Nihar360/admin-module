@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AdminLayout } from '../components/admin/layout/AdminLayout';
 import { StatCard } from '../components/admin/dashboard/StatCard';
 import { RecentOrders } from '../components/admin/dashboard/RecentOrders';

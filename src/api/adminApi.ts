@@ -103,7 +103,7 @@ export interface PageResponse<T> {
 export const adminApi = {
   // Auth
   login: async (email: string, password: string) => {
-    const response = await apiClient.post<ApiResponse<{ token: string; user: User }>>('/auth/login', {
+    const response = await apiClient.post<ApiResponse<{ token: string; user: User }>>('/admin/auth/login', {
       email,
       password,
     });
@@ -111,7 +111,7 @@ export const adminApi = {
   },
 
   getCurrentUser: async () => {
-    const response = await apiClient.get<ApiResponse<User>>('/auth/me');
+    const response = await apiClient.get<ApiResponse<User>>('/admin/auth/me');
     return response.data;
   },
 

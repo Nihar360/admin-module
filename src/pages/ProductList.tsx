@@ -10,14 +10,14 @@ import { Product } from '../api/adminApi';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const ProductList: React.FC = () => {
   const [filters, setFilters] = useState({
     category: 'all',
     search: '',
   });
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | number | null>(null);
   const { products, isLoading, deleteProduct } = useAdminProducts(filters);
   const navigate = useNavigate();
 
@@ -65,8 +65,8 @@ export const ProductList: React.FC = () => {
       header: 'Stock',
       render: (product: Product) => (
         <div className="flex items-center gap-2">
-          <span>{product.stock}</span>
-          <StockBadge stock={product.stock} />
+          <span>{product.stockCount}</span>
+          <StockBadge stock={product.stockCount} />
         </div>
       ),
     },
@@ -87,7 +87,7 @@ export const ProductList: React.FC = () => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               navigate(`/admin/products/${product.id}/edit`);
             }}
@@ -97,7 +97,7 @@ export const ProductList: React.FC = () => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               setDeleteId(product.id);
             }}

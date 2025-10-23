@@ -31,14 +31,9 @@ export const OrderList: React.FC = () => {
       header: 'Order Number',
     },
     {
-      key: 'customer',
-      header: 'Customer',
-      render: (order: Order) => (
-        <div>
-          <div>{order.customer.name}</div>
-          <div className="text-sm text-gray-500">{order.customer.email}</div>
-        </div>
-      ),
+      key: 'userId',
+      header: 'User ID',
+      render: (order: Order) => `#${order.userId}`,
     },
     {
       key: 'total',
@@ -62,7 +57,7 @@ export const OrderList: React.FC = () => {
         <Button
           size="sm"
           variant="ghost"
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             e.stopPropagation();
             navigate(`/admin/orders/${order.id}`);
           }}
