@@ -44,3 +44,6 @@ coverage/
 .cache/
 .temp/
 .tmp/
+
+# MySQL/MariaDB data
+mysql/

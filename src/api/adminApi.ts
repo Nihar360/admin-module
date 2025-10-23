@@ -1,52 +1,50 @@
-// Mock API functions for admin operations
-// In production, replace these with actual API calls
+import apiClient from './apiClient';
 
+// Types based on backend API responses
 export interface Order {
-  id: string;
+  id: number;
   orderNumber: string;
-  customer: {
-    name: string;
-    email: string;
-    phone: string;
-  };
-  items: Array<{
-    id: string;
-    name: string;
-    quantity: number;
-    price: number;
-    image: string;
-  }>;
+  userId: number;
+  status: string;
+  paymentMethod: string;
+  subtotal: number;
+  discount: number;
+  shipping: number;
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentStatus: 'pending' | 'paid' | 'refunded';
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
+  notes?: string;
+  orderDate: string;
+  deliveredDate?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface Product {
-  id: string;
+  id: number;
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  category: string;
-  stock: number;
-  sku: string;
-  images: string[];
+  originalPrice?: number;
+  discountPrice?: number;
+  categoryId: number;
+  category?: string;
+  stockCount: number;
+  sku?: string;
+  image: string;
+  imageUrl?: string;
+  images?: string[];
+  badge?: string;
+  rating: number;
+  reviews: number;
+  inStock: boolean;
   isActive: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface Coupon {
-  id: string;
+  id: number;
   code: string;
-  type: 'percentage' | 'fixed';
+  type: 'PERCENTAGE' | 'FIXED';
   value: number;
   minPurchase: number;
   maxDiscount?: number;
@@ -57,14 +55,14 @@ export interface Coupon {
 }
 
 export interface User {
-  id: string;
-  name: string;
+  id: number;
   email: string;
-  phone: string;
-  totalOrders: number;
-  totalSpent: number;
-  joinedAt: string;
-  status: 'active' | 'blocked';
+  fullName: string;
+  mobile?: string;
+  role: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface DashboardStats {
@@ -75,6 +73,9 @@ export interface DashboardStats {
   revenueChange: number;
   ordersChange: number;
   customersChange: number;
+  totalProducts?: number;
+  lowStockProducts?: number;
+  pendingOrders?: number;
 }
 
 export interface SalesData {
@@ -83,115 +84,50 @@ export interface SalesData {
   orders: number;
 }
 
-// Mock data
-const mockOrders: Order[] = Array.from({ length: 50 }, (_, i) => ({
-  id: `order-${i + 1}`,
-  orderNumber: `ORD-${String(i + 1).padStart(5, '0')}`,
-  customer: {
-    name: `Customer ${i + 1}`,
-    email: `customer${i + 1}@example.com`,
-    phone: `+1234567${String(i).padStart(4, '0')}`,
-  },
-  items: [
-    {
-      id: `item-${i + 1}`,
-      name: `Product ${i + 1}`,
-      quantity: Math.floor(Math.random() * 3) + 1,
-      price: Math.floor(Math.random() * 100) + 20,
-      image: '',
-    },
-  ],
-  total: Math.floor(Math.random() * 500) + 50,
-  status: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'][
-    Math.floor(Math.random() * 5)
-  ] as Order['status'],
-  paymentStatus: ['pending', 'paid', 'refunded'][Math.floor(Math.random() * 3)] as Order['paymentStatus'],
-  shippingAddress: {
-    street: `${i + 1} Main Street`,
-    city: 'New York',
-    state: 'NY',
-    zipCode: '10001',
-    country: 'USA',
-  },
-  createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
-  updatedAt: new Date().toISOString(),
-}));
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data: T;
+  timestamp?: string;
+}
 
-const mockProducts: Product[] = Array.from({ length: 30 }, (_, i) => ({
-  id: `product-${i + 1}`,
-  name: `Product ${i + 1}`,
-  description: `This is a detailed description for Product ${i + 1}`,
-  price: Math.floor(Math.random() * 200) + 20,
-  category: ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books'][
-    Math.floor(Math.random() * 5)
-  ],
-  stock: Math.floor(Math.random() * 100),
-  sku: `SKU-${String(i + 1).padStart(5, '0')}`,
-  images: [],
-  isActive: Math.random() > 0.2,
-  createdAt: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
-}));
-
-const mockCoupons: Coupon[] = [
-  {
-    id: '1',
-    code: 'SUMMER25',
-    type: 'percentage',
-    value: 25,
-    minPurchase: 50,
-    maxDiscount: 100,
-    usageLimit: 1000,
-    usageCount: 234,
-    expiresAt: '2025-08-31T23:59:59Z',
-    isActive: true,
-  },
-  {
-    id: '2',
-    code: 'FLAT50',
-    type: 'fixed',
-    value: 50,
-    minPurchase: 200,
-    usageLimit: 500,
-    usageCount: 89,
-    expiresAt: '2025-12-31T23:59:59Z',
-    isActive: true,
-  },
-];
-
-const mockUsers: User[] = Array.from({ length: 25 }, (_, i) => ({
-  id: `user-${i + 1}`,
-  name: `Customer ${i + 1}`,
-  email: `customer${i + 1}@example.com`,
-  phone: `+1234567${String(i).padStart(4, '0')}`,
-  totalOrders: Math.floor(Math.random() * 20) + 1,
-  totalSpent: Math.floor(Math.random() * 5000) + 100,
-  joinedAt: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-  status: Math.random() > 0.1 ? 'active' : 'blocked',
-}));
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  pageNumber: number;
+  pageSize: number;
+}
 
 // API functions
 export const adminApi = {
+  // Auth
+  login: async (email: string, password: string) => {
+    const response = await apiClient.post<ApiResponse<{ token: string; user: User }>>('/auth/login', {
+      email,
+      password,
+    });
+    return response.data;
+  },
+
+  getCurrentUser: async () => {
+    const response = await apiClient.get<ApiResponse<User>>('/auth/me');
+    return response.data;
+  },
+
   // Dashboard
-  getDashboardStats: async (): Promise<DashboardStats> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return {
-      totalRevenue: 125340,
-      totalOrders: 1234,
-      totalCustomers: 567,
-      averageOrderValue: 101.57,
-      revenueChange: 12.5,
-      ordersChange: 8.3,
-      customersChange: 15.2,
-    };
+  getDashboardStats: async (days: number = 30): Promise<DashboardStats> => {
+    const response = await apiClient.get<ApiResponse<DashboardStats>>('/admin/dashboard/stats', {
+      params: { days },
+    });
+    return response.data.data;
   },
 
   getSalesData: async (days: number = 30): Promise<SalesData[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return Array.from({ length: days }, (_, i) => ({
-      date: new Date(Date.now() - (days - i - 1) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      revenue: Math.floor(Math.random() * 5000) + 1000,
-      orders: Math.floor(Math.random() * 50) + 10,
-    }));
+    const response = await apiClient.get<ApiResponse<SalesData[]>>('/admin/dashboard/sales', {
+      params: { days },
+    });
+    return response.data.data || [];
   },
 
   // Orders
@@ -201,156 +137,209 @@ export const adminApi = {
     page?: number;
     limit?: number;
   }): Promise<{ orders: Order[]; total: number }> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    let filtered = [...mockOrders];
-
-    if (filters?.status && filters.status !== 'all') {
-      filtered = filtered.filter((order) => order.status === filters.status);
-    }
-
-    if (filters?.search) {
-      const search = filters.search.toLowerCase();
-      filtered = filtered.filter(
-        (order) =>
-          order.orderNumber.toLowerCase().includes(search) ||
-          order.customer.name.toLowerCase().includes(search) ||
-          order.customer.email.toLowerCase().includes(search)
-      );
-    }
-
-    return { orders: filtered, total: filtered.length };
+    const response = await apiClient.get<ApiResponse<PageResponse<Order>>>('/admin/orders', {
+      params: {
+        status: filters?.status !== 'all' ? filters?.status : undefined,
+        search: filters?.search,
+        page: filters?.page || 0,
+        size: filters?.limit || 10,
+      },
+    });
+    return {
+      orders: response.data.data.content,
+      total: response.data.data.totalElements,
+    };
   },
 
-  getOrder: async (id: string): Promise<Order | null> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return mockOrders.find((order) => order.id === id) || null;
+  getOrder: async (id: string | number): Promise<Order | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<Order>>(`/admin/orders/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return null;
+    }
   },
 
-  updateOrderStatus: async (id: string, status: Order['status']): Promise<Order> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const order = mockOrders.find((o) => o.id === id);
-    if (!order) throw new Error('Order not found');
-    order.status = status;
-    order.updatedAt = new Date().toISOString();
-    return order;
+  updateOrderStatus: async (id: string | number, status: string): Promise<Order> => {
+    const response = await apiClient.put<ApiResponse<Order>>(`/admin/orders/${id}/status`, {
+      status,
+      notes: `Order status updated to ${status}`,
+    });
+    return response.data.data;
   },
 
   // Products
   getProducts: async (filters?: {
     category?: string;
+    categoryId?: number;
     search?: string;
     inStock?: boolean;
+    page?: number;
+    size?: number;
   }): Promise<Product[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    let filtered = [...mockProducts];
-
-    if (filters?.category && filters.category !== 'all') {
-      filtered = filtered.filter((product) => product.category === filters.category);
-    }
-
-    if (filters?.search) {
-      const search = filters.search.toLowerCase();
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(search) ||
-          product.sku.toLowerCase().includes(search)
-      );
-    }
-
-    if (filters?.inStock) {
-      filtered = filtered.filter((product) => product.stock > 0);
-    }
-
-    return filtered;
+    const response = await apiClient.get<ApiResponse<PageResponse<Product>>>('/admin/products', {
+      params: {
+        categoryId: filters?.categoryId,
+        search: filters?.search,
+        inStock: filters?.inStock,
+        page: filters?.page || 0,
+        size: filters?.size || 50,
+      },
+    });
+    return response.data.data.content;
   },
 
-  getProduct: async (id: string): Promise<Product | null> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return mockProducts.find((product) => product.id === id) || null;
-  },
-
-  createProduct: async (data: Omit<Product, 'id' | 'createdAt'>): Promise<Product> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const newProduct: Product = {
-      ...data,
-      id: `product-${mockProducts.length + 1}`,
-      createdAt: new Date().toISOString(),
-    };
-    mockProducts.push(newProduct);
-    return newProduct;
-  },
-
-  updateProduct: async (id: string, data: Partial<Product>): Promise<Product> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const product = mockProducts.find((p) => p.id === id);
-    if (!product) throw new Error('Product not found');
-    Object.assign(product, data);
-    return product;
-  },
-
-  deleteProduct: async (id: string): Promise<void> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const index = mockProducts.findIndex((p) => p.id === id);
-    if (index > -1) {
-      mockProducts.splice(index, 1);
+  getProduct: async (id: string | number): Promise<Product | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<Product>>(`/admin/products/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return null;
     }
+  },
+
+  createProduct: async (data: Partial<Product>): Promise<Product> => {
+    const response = await apiClient.post<ApiResponse<Product>>('/admin/products', {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      originalPrice: data.originalPrice,
+      discountPrice: data.discountPrice,
+      categoryId: data.categoryId,
+      stockCount: data.stockCount || 0,
+      sku: data.sku,
+      image: data.image || '',
+      badge: data.badge,
+      isActive: data.isActive !== false,
+    });
+    return response.data.data;
+  },
+
+  updateProduct: async (id: string | number, data: Partial<Product>): Promise<Product> => {
+    const response = await apiClient.put<ApiResponse<Product>>(`/admin/products/${id}`, {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      originalPrice: data.originalPrice,
+      discountPrice: data.discountPrice,
+      categoryId: data.categoryId,
+      stockCount: data.stockCount,
+      sku: data.sku,
+      image: data.image,
+      badge: data.badge,
+      isActive: data.isActive,
+    });
+    return response.data.data;
+  },
+
+  deleteProduct: async (id: string | number): Promise<void> => {
+    await apiClient.delete(`/admin/products/${id}`);
+  },
+
+  adjustStock: async (id: string | number, quantity: number, type: 'ADD' | 'SUBTRACT'): Promise<Product> => {
+    const response = await apiClient.put<ApiResponse<Product>>(`/admin/products/${id}/stock`, {
+      quantity,
+      type,
+    });
+    return response.data.data;
   },
 
   // Coupons
   getCoupons: async (): Promise<Coupon[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return mockCoupons;
+    const response = await apiClient.get<ApiResponse<Coupon[]>>('/admin/coupons');
+    return response.data.data;
   },
 
-  createCoupon: async (data: Omit<Coupon, 'id' | 'usageCount'>): Promise<Coupon> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const newCoupon: Coupon = {
-      ...data,
-      id: `coupon-${mockCoupons.length + 1}`,
-      usageCount: 0,
-    };
-    mockCoupons.push(newCoupon);
-    return newCoupon;
+  createCoupon: async (data: Partial<Coupon>): Promise<Coupon> => {
+    const response = await apiClient.post<ApiResponse<Coupon>>('/admin/coupons', {
+      code: data.code,
+      type: data.type,
+      value: data.value,
+      minPurchase: data.minPurchase || 0,
+      maxDiscount: data.maxDiscount,
+      usageLimit: data.usageLimit || 100,
+      expiresAt: data.expiresAt,
+      isActive: data.isActive !== false,
+    });
+    return response.data.data;
   },
 
-  updateCoupon: async (id: string, data: Partial<Coupon>): Promise<Coupon> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const coupon = mockCoupons.find((c) => c.id === id);
-    if (!coupon) throw new Error('Coupon not found');
-    Object.assign(coupon, data);
-    return coupon;
+  updateCoupon: async (id: string | number, data: Partial<Coupon>): Promise<Coupon> => {
+    const response = await apiClient.put<ApiResponse<Coupon>>(`/admin/coupons/${id}`, {
+      code: data.code,
+      type: data.type,
+      value: data.value,
+      minPurchase: data.minPurchase,
+      maxDiscount: data.maxDiscount,
+      usageLimit: data.usageLimit,
+      expiresAt: data.expiresAt,
+      isActive: data.isActive,
+    });
+    return response.data.data;
   },
 
-  deleteCoupon: async (id: string): Promise<void> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const index = mockCoupons.findIndex((c) => c.id === id);
-    if (index > -1) {
-      mockCoupons.splice(index, 1);
-    }
+  deleteCoupon: async (id: string | number): Promise<void> => {
+    await apiClient.delete(`/admin/coupons/${id}`);
   },
 
   // Users
   getUsers: async (filters?: { search?: string; status?: string }): Promise<User[]> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    let filtered = [...mockUsers];
-
-    if (filters?.search) {
-      const search = filters.search.toLowerCase();
-      filtered = filtered.filter(
-        (user) =>
-          user.name.toLowerCase().includes(search) || user.email.toLowerCase().includes(search)
-      );
-    }
-
-    if (filters?.status && filters.status !== 'all') {
-      filtered = filtered.filter((user) => user.status === filters.status);
-    }
-
-    return filtered;
+    const response = await apiClient.get<ApiResponse<PageResponse<User>>>('/admin/users', {
+      params: {
+        search: filters?.search,
+        isActive: filters?.status !== 'all' && filters?.status === 'active' ? true : filters?.status === 'blocked' ? false : undefined,
+        page: 0,
+        size: 100,
+      },
+    });
+    return response.data.data.content;
   },
 
-  getUser: async (id: string): Promise<User | null> => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return mockUsers.find((user) => user.id === id) || null;
+  getUser: async (id: string | number): Promise<User | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<User>>(`/admin/users/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return null;
+    }
+  },
+
+  // Categories
+  getCategories: async () => {
+    const response = await apiClient.get<Category[]>('/admin/categories');
+    return response.data;
+  },
+  
+  // Inventory
+  getInventory: async (filters?: {
+    categoryId?: number;
+    search?: string;
+    page?: number;
+    size?: number;
+  }) => {
+    const response = await apiClient.get<ApiResponse<PageResponse<Product>>>('/admin/inventory', {
+      params: {
+        categoryId: filters?.categoryId,
+        search: filters?.search,
+        page: filters?.page || 0,
+        size: filters?.size || 20,
+      },
+    });
+    return response.data.data.content;
+  },
+
+  getLowStockProducts: async () => {
+    const response = await apiClient.get<ApiResponse<Product[]>>('/admin/inventory/low-stock');
+    return response.data.data;
   },
 };
+
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  image?: string;
+  itemCount?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
