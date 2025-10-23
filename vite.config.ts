@@ -63,7 +63,7 @@ export default defineConfig({
     },
     // 👇 Add this block
     allowedHosts: [
-      "2b46d8ec-af76-43b1-abe4-de6531efd45d-00-3rjpwqxqryzx0.riker.replit.dev",
+      "8edb7467-0cdd-4e30-9e57-dc6ddee79011-00-2nvxce4zsd53x.kirk.replit.dev",
       "*.replit.dev",
     ],
   },
