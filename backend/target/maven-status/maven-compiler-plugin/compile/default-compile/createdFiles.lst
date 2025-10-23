@@ -3,6 +3,7 @@ com\ecommerce\admin\controller\UserController.class
 com\ecommerce\admin\service\UserService.class
 com\ecommerce\admin\dto\response\UserResponse$UserResponseBuilder.class
 com\ecommerce\admin\model\Product$ProductBuilder.class
+com\ecommerce\admin\config\CorsConfig.class
 com\ecommerce\admin\dto\response\UserResponse.class
 com\ecommerce\admin\exception\ErrorResponse.class
 com\ecommerce\admin\service\OrderService.class

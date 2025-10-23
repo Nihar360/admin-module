@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/api/v1/admin/reports")
+@RequestMapping("/admin/reports")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

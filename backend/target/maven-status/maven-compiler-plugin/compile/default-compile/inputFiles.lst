@@ -59,6 +59,7 @@ E:\admin-module\backend\src\main\java\com\ecommerce\admin\model\enums\PaymentMet
 E:\admin-module\backend\src\main\java\com\ecommerce\admin\exception\ErrorResponse.java
 E:\admin-module\backend\src\main\java\com\ecommerce\admin\model\Category.java
 E:\admin-module\backend\src\main\java\com\ecommerce\admin\controller\NotificationController.java
+E:\admin-module\backend\src\main\java\com\ecommerce\admin\config\CorsConfig.java
 E:\admin-module\backend\src\main\java\com\ecommerce\admin\service\UserService.java
 E:\admin-module\backend\src\main\java\com\ecommerce\admin\controller\ProductController.java
 E:\admin-module\backend\src\main\java\com\ecommerce\admin\controller\OrderController.java

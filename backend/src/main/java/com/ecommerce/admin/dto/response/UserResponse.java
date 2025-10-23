@@ -22,7 +22,7 @@ public class UserResponse {
     private String profileImage;
     private LocalDateTime lastLogin;
     private LocalDateTime createdAt;
-    
+    private LocalDateTime updatedAt; 
     private Long totalOrders;
     private Long totalSpent;
 }

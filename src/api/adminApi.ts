@@ -84,6 +84,16 @@ export interface SalesData {
   orders: number;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  image?: string;
+  itemCount?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
@@ -112,6 +122,15 @@ export const adminApi = {
 
   getCurrentUser: async () => {
     const response = await apiClient.get<ApiResponse<User>>('/admin/auth/me');
+    return response.data;
+  },
+
+  changePassword: async (oldPassword: string, newPassword: string, confirmPassword?: string) => {
+    const response = await apiClient.put<ApiResponse<void>>('/admin/auth/password', {
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    });
     return response.data;
   },
 
@@ -156,6 +175,7 @@ export const adminApi = {
       const response = await apiClient.get<ApiResponse<Order>>(`/admin/orders/${id}`);
       return response.data.data;
     } catch (error) {
+      console.error('Error fetching order:', error);
       return null;
     }
   },
@@ -194,6 +214,7 @@ export const adminApi = {
       const response = await apiClient.get<ApiResponse<Product>>(`/admin/products/${id}`);
       return response.data.data;
     } catch (error) {
+      console.error('Error fetching product:', error);
       return null;
     }
   },
@@ -300,23 +321,68 @@ export const adminApi = {
       const response = await apiClient.get<ApiResponse<User>>(`/admin/users/${id}`);
       return response.data.data;
     } catch (error) {
+      console.error('Error fetching user:', error);
       return null;
     }
   },
 
-  // Categories
-  getCategories: async () => {
-    const response = await apiClient.get<Category[]>('/admin/categories');
-    return response.data;
+  updateUser: async (id: string | number, data: Partial<User>): Promise<User> => {
+    const response = await apiClient.put<ApiResponse<User>>(`/admin/users/${id}`, data);
+    return response.data.data;
   },
-  
+
+  toggleUserStatus: async (id: string | number, isActive: boolean): Promise<User> => {
+    const response = await apiClient.patch<ApiResponse<User>>(`/admin/users/${id}/status`, {
+      isActive,
+    });
+    return response.data.data;
+  },
+
+  // Categories
+  getCategories: async (): Promise<Category[]> => {
+    const response = await apiClient.get<ApiResponse<Category[]>>('/admin/categories');
+    return response.data.data || response.data;
+  },
+
+  getCategory: async (id: string | number): Promise<Category | null> => {
+    try {
+      const response = await apiClient.get<ApiResponse<Category>>(`/admin/categories/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching category:', error);
+      return null;
+    }
+  },
+
+  createCategory: async (data: Partial<Category>): Promise<Category> => {
+    const response = await apiClient.post<ApiResponse<Category>>('/admin/categories', {
+      name: data.name,
+      description: data.description,
+      image: data.image,
+    });
+    return response.data.data;
+  },
+
+  updateCategory: async (id: string | number, data: Partial<Category>): Promise<Category> => {
+    const response = await apiClient.put<ApiResponse<Category>>(`/admin/categories/${id}`, {
+      name: data.name,
+      description: data.description,
+      image: data.image,
+    });
+    return response.data.data;
+  },
+
+  deleteCategory: async (id: string | number): Promise<void> => {
+    await apiClient.delete(`/admin/categories/${id}`);
+  },
+
   // Inventory
   getInventory: async (filters?: {
     categoryId?: number;
     search?: string;
     page?: number;
     size?: number;
-  }) => {
+  }): Promise<Product[]> => {
     const response = await apiClient.get<ApiResponse<PageResponse<Product>>>('/admin/inventory', {
       params: {
         categoryId: filters?.categoryId,
@@ -328,18 +394,15 @@ export const adminApi = {
     return response.data.data.content;
   },
 
-  getLowStockProducts: async () => {
+  getLowStockProducts: async (): Promise<Product[]> => {
     const response = await apiClient.get<ApiResponse<Product[]>>('/admin/inventory/low-stock');
+    return response.data.data;
+  },
+
+  getStockHistory: async (productId: string | number): Promise<any[]> => {
+    const response = await apiClient.get<ApiResponse<any[]>>(`/admin/inventory/${productId}/history`);
     return response.data.data;
   },
 };
 
-export interface Category {
-  id: number;
-  name: string;
-  description?: string;
-  image?: string;
-  itemCount?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+export default adminApi;

@@ -58,11 +58,12 @@ export const UserList: React.FC = () => {
     {
       key: 'totalOrders',
       header: 'Orders',
+      render: (user: User) => user.totalOrders ?? 0,
     },
     {
       key: 'totalSpent',
       header: 'Total Spent',
-      render: (user: User) => `$${user.totalSpent.toFixed(2)}`,
+      render: (user: User) => `$${(user.totalSpent ?? 0).toFixed(2)}`,
     },
     {
       key: 'joinedAt',

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/notifications")
+@RequestMapping("/admin/notifications")
 @RequiredArgsConstructor
 @Slf4j
 @Validated

@@ -54,17 +54,11 @@ export default defineConfig({
     outDir: "build",
   },
   server: {
-    host: "0.0.0.0",
     port: 5000,
-    strictPort: true,
+    host: "localhost",
     hmr: {
-      clientPort: 443,
-      protocol: "wss",
+      host: "localhost",
+      port: 5000,
     },
-    // 👇 Add this block
-    allowedHosts: [
-      "8edb7467-0cdd-4e30-9e57-dc6ddee79011-00-2nvxce4zsd53x.kirk.replit.dev",
-      "*.replit.dev",
-    ],
   },
 });

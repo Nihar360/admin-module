@@ -59,13 +59,23 @@ public class AuthService {
         
         log.info("Admin {} logged in successfully", userDetails.getEmail());
         
+        // Build nested UserResponse for frontend compatibility
+        UserResponse userResponse = UserResponse.builder()
+                .id(userDetails.getId())
+                .fullName(userDetails.getFullName())
+                .email(userDetails.getEmail())
+                .mobile(user.getMobile())
+                .role(userDetails.getRole())
+                .isActive(user.getIsActive())
+                .profileImage(user.getProfileImage())
+                .lastLogin(user.getLastLogin())
+                .createdAt(user.getCreatedAt())
+                .build();
+        
         return LoginResponse.builder()
                 .token(token)
                 .type("Bearer")
-                .userId(userDetails.getId())
-                .email(userDetails.getEmail())
-                .fullName(userDetails.getFullName())
-                .role(userDetails.getRole())
+                .user(userResponse)  // Nested user object
                 .build();
     }
     
@@ -92,13 +102,31 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UnauthorizedException("User not found"));
         
+        // Verify current password
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new ValidationException("Current password is incorrect");
         }
         
+        // Validate new password (optional but recommended)
+        if (request.getNewPassword() == null || request.getNewPassword().length() < 6) {
+            throw new ValidationException("New password must be at least 6 characters long");
+        }
+        
+        // Check if new password is different from old password
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new ValidationException("New password must be different from current password");
+        }
+        
+        // Validate password confirmation if provided
+        if (request.getConfirmPassword() != null && 
+            !request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new ValidationException("New password and confirmation do not match");
+        }
+        
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
         
-        log.info("Password changed for user {}", user.getEmail());
+        log.info("Password changed successfully for user {}", user.getEmail());
     }
 }
