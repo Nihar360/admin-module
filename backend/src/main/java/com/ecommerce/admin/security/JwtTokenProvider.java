@@ -37,13 +37,23 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
         
         return Jwts.builder()
-                .subject(Long.toString(userPrincipal.getId()))
-                .claim("email", userPrincipal.getEmail())
+                .subject(userPrincipal.getEmail())
+                .claim("id", userPrincipal.getId())
                 .claim("role", userPrincipal.getRole())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key, Jwts.SIG.HS512)
                 .compact();
+    }
+    
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        
+        return claims.getSubject();
     }
     
     public Long getUserIdFromToken(String token) {
@@ -53,7 +63,7 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         
-        return Long.parseLong(claims.getSubject());
+        return claims.get("id", Long.class);
     }
     
     public boolean validateToken(String authToken) {

@@ -3,34 +3,35 @@ package com.ecommerce.admin.security;
 import com.ecommerce.admin.model.User;
 import com.ecommerce.admin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
     
     private final UserRepository userRepository;
     
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.debug("Loading user details for email: {}", email);
+        
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> 
-                        new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> {
+                    log.error("User not found with email: {}", email);
+                    return new UsernameNotFoundException("User not found with email: " + email);
+                });
         
-        return SecurityUser.fromUser(user);
-    }
-    
-    @Transactional
-    public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> 
-                        new UsernameNotFoundException("User not found with id: " + id));
+        if (!user.getIsActive()) {
+            log.warn("Login attempt for inactive user: {}", email);
+            throw new UsernameNotFoundException("User account is inactive");
+        }
         
-        return SecurityUser.fromUser(user);
+        log.debug("User loaded successfully: {}", email);
+        return new SecurityUser(user);
     }
 }

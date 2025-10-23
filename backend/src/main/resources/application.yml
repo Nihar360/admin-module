@@ -8,12 +8,14 @@ spring:
   datasource:
     url: ${DATABASE_URL:jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    password: ${DB_PASSWORD:nihar@360}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
       connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   
   jpa:
     hibernate:
@@ -35,6 +37,12 @@ spring:
       write-dates-as-timestamps: false
     time-zone: UTC
     default-property-inclusion: non_null
+  
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      enabled: true
 
 server:
   port: ${PORT:8080}
@@ -45,7 +53,7 @@ server:
     context-path: /api/v1
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}
   expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
 
@@ -54,6 +62,7 @@ logging:
     root: INFO
     com.ecommerce.admin: DEBUG
     org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   pattern:
@@ -82,12 +91,13 @@ springdoc:
     tags-sorter: alpha
     disable-swagger-default-url: true
     display-request-duration: true
+    enabled: true
 
 app:
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5000,http://127.0.0.1:5000}
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5000,http://127.0.0.1:5000,http://localhost:3000}
     allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
     allowed-headers: "*"
-    exposed-headers: Authorization
+    exposed-headers: Authorization,X-Total-Count
     allow-credentials: true
     max-age: 3600

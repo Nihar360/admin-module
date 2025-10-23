@@ -1,8 +1,6 @@
 package com.ecommerce.admin.security;
 
 import com.ecommerce.admin.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,43 +8,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@Getter
-@AllArgsConstructor
 public class SecurityUser implements UserDetails {
     
-    private Long id;
-    private String email;
-    private String password;
-    private String fullName;
-    private String role;
-    private boolean active;
+    private final User user;
     
-    public static SecurityUser fromUser(User user) {
-        return new SecurityUser(
-                user.getId(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getFullName(),
-                user.getRole().name(),
-                user.getIsActive()
-        );
+    public SecurityUser(User user) {
+        this.user = user;
     }
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + role)
-        );
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
     
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
     
     @Override
     public String getUsername() {
-        return email;
+        return user.getEmail();
     }
     
     @Override
@@ -66,6 +48,23 @@ public class SecurityUser implements UserDetails {
     
     @Override
     public boolean isEnabled() {
-        return active;
+        return user.getIsActive();
+    }
+    
+    // Getters for additional user info
+    public Long getId() {
+        return user.getId();
+    }
+    
+    public String getEmail() {
+        return user.getEmail();
+    }
+    
+    public String getFullName() {
+        return user.getFullName();
+    }
+    
+    public String getRole() {
+        return user.getRole().name();
     }
 }
