@@ -31,7 +31,7 @@ mysqld --no-defaults \
 echo "Waiting for MariaDB to start..."
 sleep 5
 
-# Check if it's running
+# Check if it's running (try without password first, then with password)
 if mysql -u root --socket="$MYSQL_UNIX_PORT" -e "SELECT 1;" > /dev/null 2>&1; then
   echo "MariaDB started successfully!"
   
@@ -57,6 +57,32 @@ EOF
   
   echo "Database setup complete!"
   echo "Root password has been set."
+  echo "Database: ecommerce_db"
+  echo "User: ${DATABASE_USERNAME}"
+elif mysql -u root -p"${DATABASE_PASSWORD}" --socket="$MYSQL_UNIX_PORT" -e "SELECT 1;" > /dev/null 2>&1; then
+  echo "MariaDB started successfully (using existing password)!"
+  
+  # Ensure database and users exist
+  echo "Verifying ecommerce_db database and users..."
+  mysql -u root -p"${DATABASE_PASSWORD}" --socket="$MYSQL_UNIX_PORT" <<EOF
+-- Create database
+CREATE DATABASE IF NOT EXISTS ecommerce_db;
+
+-- Set root password
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${DATABASE_PASSWORD}';
+
+-- Create database user for application
+CREATE USER IF NOT EXISTS '${DATABASE_USERNAME}'@'localhost' IDENTIFIED BY '${DATABASE_PASSWORD}';
+CREATE USER IF NOT EXISTS '${DATABASE_USERNAME}'@'127.0.0.1' IDENTIFIED BY '${DATABASE_PASSWORD}';
+GRANT ALL PRIVILEGES ON ecommerce_db.* TO '${DATABASE_USERNAME}'@'localhost';
+GRANT ALL PRIVILEGES ON ecommerce_db.* TO '${DATABASE_USERNAME}'@'127.0.0.1';
+FLUSH PRIVILEGES;
+
+-- Show databases
+SHOW DATABASES;
+EOF
+  
+  echo "Database verification complete!"
   echo "Database: ecommerce_db"
   echo "User: ${DATABASE_USERNAME}"
 else
