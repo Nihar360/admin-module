@@ -281,15 +281,44 @@ curl -X POST http://localhost:8080/api/v1/admin/auth/login \
 - **Authentication**: JWT-based with secure password hashing
 - **Real-time Sync**: All frontend operations sync immediately with backend
 
+## Running Locally
+
+This project is fully configured to run on your local machine. See detailed instructions in:
+- **[LOCAL_SETUP.md](LOCAL_SETUP.md)** - Complete setup guide
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - Quick commands reference
+- **[README.md](README.md)** - Project overview
+
+### Quick Start Scripts
+- **Linux/Mac**: `./run-local.sh` - Auto-setup and start all services
+- **Windows**: `run-local.bat` - Auto-setup and start all services
+
+### Local Requirements
+- Java 19+ (backend)
+- Maven 3.6+ (build tool)
+- Node.js 18+ (frontend)
+- MySQL 8+ or MariaDB 10.11+ (database)
+
+### Environment Configuration
+Copy `.env.example` to `.env` and set your MySQL credentials:
+```
+DB_USERNAME=root
+DB_PASSWORD=your_password
+```
+
+All configuration already supports both Replit and local environments with environment variable fallbacks.
+
 ## Recent Changes
 
 ### October 23, 2025
-- Connected frontend to real Spring Boot backend API
-- Replaced all mock data with live database operations
-- Fixed Product and Order type mismatches
-- Updated AdminAuthContext to use real JWT authentication
-- Configured CORS and security properly
-- Created admin user in database
-- All hooks now use adminApi instead of mock data
-- Installed axios for HTTP requests
-- Fixed React TypeScript configuration
+- **Import Migration Completed**: Project migrated to Replit environment
+- Installed all npm dependencies
+- Set up database credentials as Replit secrets
+- Fixed MySQL startup script to handle existing databases
+- Created initial admin user (admin@example.com / admin123)
+- All three workflows (Frontend, Backend, MySQL) running successfully
+- **Local Development Ready**: Created comprehensive local setup documentation
+  - Added LOCAL_SETUP.md with step-by-step instructions
+  - Added run-local.sh and run-local.bat startup scripts
+  - Added .env.example for environment variables
+  - Added QUICK_REFERENCE.md for common commands
+  - Updated README.md with project overview
