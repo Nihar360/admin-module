@@ -2,6 +2,9 @@ com/ecommerce/admin/dto/response/CouponResponse$CouponResponseBuilder.class
 com/ecommerce/admin/dto/request/LoginRequest.class
 com/ecommerce/admin/model/Notification.class
 com/ecommerce/admin/dto/request/CouponCreateRequest.class
+com/ecommerce/admin/model/Cart.class
+com/ecommerce/admin/model/CartItem.class
+com/ecommerce/admin/model/ProductImage.class
 com/ecommerce/admin/model/Product$ProductBuilder.class
 com/ecommerce/admin/dto/response/OrderItemResponse.class
 com/ecommerce/admin/repository/ProductRepository.class
@@ -13,6 +16,7 @@ com/ecommerce/admin/model/enums/CouponType.class
 com/ecommerce/admin/model/Order$OrderBuilder.class
 com/ecommerce/admin/dto/response/ProductResponse$ProductResponseBuilder.class
 com/ecommerce/admin/service/AdminActivityService.class
+com/ecommerce/admin/model/ProductSize.class
 com/ecommerce/admin/AdminApplication.class
 com/ecommerce/admin/model/Coupon$CouponBuilder.class
 com/ecommerce/admin/service/DashboardService.class
@@ -26,6 +30,8 @@ com/ecommerce/admin/model/Category.class
 com/ecommerce/admin/config/WebConfig.class
 com/ecommerce/admin/service/TopProductResponse$TopProductResponseBuilder.class
 com/ecommerce/admin/model/Coupon.class
+com/ecommerce/admin/model/ProductFeature.class
+com/ecommerce/admin/model/ProductSize$ProductSizeBuilder.class
 com/ecommerce/admin/repository/UserRepository.class
 com/ecommerce/admin/dto/response/CouponResponse.class
 com/ecommerce/admin/service/OrderService.class
@@ -65,6 +71,7 @@ com/ecommerce/admin/model/User.class
 com/ecommerce/admin/model/Category$CategoryBuilder.class
 com/ecommerce/admin/service/AuthService.class
 com/ecommerce/admin/model/Address.class
+com/ecommerce/admin/model/ProductFeature$ProductFeatureBuilder.class
 com/ecommerce/admin/dto/response/DashboardStatsResponse$DashboardStatsResponseBuilder.class
 com/ecommerce/admin/model/AdminActivityLog.class
 com/ecommerce/admin/model/enums/PaymentMethod.class
@@ -84,10 +91,13 @@ com/ecommerce/admin/controller/ProductController.class
 com/ecommerce/admin/model/OrderRefund$OrderRefundBuilder.class
 com/ecommerce/admin/model/enums/RefundStatus.class
 com/ecommerce/admin/dto/response/DashboardStatsResponse.class
+com/ecommerce/admin/model/Cart$CartBuilder.class
+com/ecommerce/admin/model/CartItem$CartItemBuilder.class
 com/ecommerce/admin/exception/ErrorResponse.class
 com/ecommerce/admin/dto/response/OrderItemResponse$OrderItemResponseBuilder.class
 com/ecommerce/admin/dto/response/SalesDataPoint.class
 com/ecommerce/admin/dto/request/RefundRequest.class
+com/ecommerce/admin/model/ProductImage$ProductImageBuilder.class
 com/ecommerce/admin/dto/response/OrderResponse$OrderResponseBuilder.class
 com/ecommerce/admin/service/CategoryService.class
 com/ecommerce/admin/model/User$UserBuilder.class
@@ -113,11 +123,13 @@ com/ecommerce/admin/exception/ValidationException.class
 com/ecommerce/admin/model/OrderRefund.class
 com/ecommerce/admin/dto/response/SalesDataPoint$SalesDataPointBuilder.class
 com/ecommerce/admin/security/JwtAuthenticationFilter.class
+com/ecommerce/admin/model/ProductReview$ProductReviewBuilder.class
 com/ecommerce/admin/security/CustomUserDetailsService.class
 com/ecommerce/admin/repository/CouponRepository.class
 com/ecommerce/admin/dto/request/ProductUpdateRequest.class
 com/ecommerce/admin/service/ReportService.class
 com/ecommerce/admin/model/AdminActivityLog$AdminActivityLogBuilder.class
+com/ecommerce/admin/model/ProductReview.class
 com/ecommerce/admin/config/SwaggerConfig.class
 com/ecommerce/admin/model/OrderItem$OrderItemBuilder.class
 com/ecommerce/admin/dto/response/PageResponse$PageResponseBuilder.class

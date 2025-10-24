@@ -32,6 +32,9 @@ public class OrderItem {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
     
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal subtotal;
+    
     @Column(precision = 10, scale = 2)
     private BigDecimal discount = BigDecimal.ZERO;
     

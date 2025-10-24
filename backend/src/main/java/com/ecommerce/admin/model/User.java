@@ -35,6 +35,9 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
     
+    @Column(nullable = false)
+    private Boolean active = true;
+    
     @Column(name = "is_active")
     private Boolean isActive = true;
     

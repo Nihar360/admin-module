@@ -30,8 +30,10 @@
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/enums/RefundStatus.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/controller/ProductController.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/ProductResponse.java
+/home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/Cart.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/enums/CouponType.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/Product.java
+/home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/ProductFeature.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/ApiResponse.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/NotificationResponse.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/config/SecurityConfig.java
@@ -43,6 +45,7 @@
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/Notification.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/controller/DashboardController.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/enums/OrderStatus.java
+/home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/CartItem.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/repository/ProductRepository.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/aspect/AdminActivityAspect.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/service/AdminActivityService.java
@@ -57,6 +60,7 @@
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/repository/CouponRepository.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/repository/OrderItemRepository.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/exception/UnauthorizedException.java
+/home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/ProductImage.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/exception/ErrorResponse.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/service/ReportService.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/Order.java
@@ -73,6 +77,7 @@
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/OrderItemResponse.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/DashboardStatsResponse.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/config/WebConfig.java
+/home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/ProductSize.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/repository/AdminActivityLogRepository.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/repository/NotificationRepository.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/OrderRefund.java
@@ -81,6 +86,7 @@
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/repository/OrderRefundRepository.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/request/PasswordChangeRequest.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/CouponResponse.java
+/home/runner/workspace/backend/src/main/java/com/ecommerce/admin/model/ProductReview.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/dto/response/PageResponse.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/controller/CategoryController.java
 /home/runner/workspace/backend/src/main/java/com/ecommerce/admin/service/UserService.java

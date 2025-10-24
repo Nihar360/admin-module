@@ -40,11 +40,14 @@ public class Address {
     @Column(nullable = false, length = 100)
     private String state;
     
-    @Column(name = "pincode", nullable = false, length = 10)
-    private String pincode;
+    @Column(name = "zip_code", nullable = false, length = 10)
+    private String zipCode;
     
     @Column(length = 50)
     private String country = "India";
+    
+    @Column(length = 100)
+    private String email;
     
     @Column(name = "is_default")
     private Boolean isDefault = false;

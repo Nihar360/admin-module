@@ -27,6 +27,9 @@ public class Category {
     @Column(length = 500)
     private String image;
     
+    @Column(name = "item_count", length = 20)
+    private String itemCount;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     

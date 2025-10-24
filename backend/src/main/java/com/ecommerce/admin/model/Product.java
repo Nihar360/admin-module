@@ -38,14 +38,38 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
     
-    @Column(name = "stock_quantity", nullable = false)
+    @Column(length = 100)
+    private String categoryName;
+    
+    @Column(name = "stock_quantity")
     private Integer stockQuantity = 0;
     
-    @Column(name = "in_stock")
+    @Column(name = "stock_count", nullable = false)
+    private Integer stockCount = 0;
+    
+    @Column(name = "in_stock", nullable = false)
     private Boolean inStock = true;
     
     @Column(length = 500)
     private String thumbnail;
+    
+    @Column(length = 500)
+    private String image;
+    
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+    
+    @Column(length = 50)
+    private String badge;
+    
+    @Column(name = "original_price", precision = 10, scale = 2)
+    private BigDecimal originalPrice;
+    
+    @Column(nullable = false)
+    private Double rating = 0.0;
+    
+    @Column(nullable = false)
+    private Integer reviews = 0;
     
     @Column(name = "is_active")
     private Boolean isActive = true;

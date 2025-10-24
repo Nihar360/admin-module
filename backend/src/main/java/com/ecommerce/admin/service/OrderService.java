@@ -228,7 +228,7 @@ public class OrderService {
                 .addressLine2(shippingAddr.getAddressLine2())
                 .city(shippingAddr.getCity())
                 .state(shippingAddr.getState())
-                .pincode(shippingAddr.getPincode())
+                .zipCode(shippingAddr.getZipCode())
                 .country(shippingAddr.getCountry())
                 .build();
         

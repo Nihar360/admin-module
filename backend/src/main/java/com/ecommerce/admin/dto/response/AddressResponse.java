@@ -17,6 +17,6 @@ public class AddressResponse {
     private String addressLine2;
     private String city;
     private String state;
-    private String pincode;
+    private String zipCode;
     private String country;
 }
