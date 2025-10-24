@@ -58,13 +58,9 @@ export default defineConfig({
     port: 5000,
     strictPort: true,
     hmr: {
+      host: process.env.REPLIT_DEV_DOMAIN,
       clientPort: 443,
       protocol: "wss",
     },
-    // 👇 Add this block
-    allowedHosts: [
-      "c3d58f80-d7c5-4f8e-af2b-6001780d8d96-00-1e6yt22i8hfro.picard.replit.dev",
-      "*.replit.dev",
-    ],
   },
 });
