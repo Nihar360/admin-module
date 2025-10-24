@@ -30,10 +30,13 @@ export const UserList: React.FC = () => {
 
   const loadUsers = async () => {
     try {
-      const data = await adminApi.getUsers(filters);
-      setUsers(data);
+      setIsLoading(true);
+      const response = await adminApi.getUsers(filters);
+      // Extract the content array from PageResponse
+      setUsers(response.content || []);
     } catch (error) {
       console.error('Failed to load users');
+      toast.error('Failed to load users');
     } finally {
       setIsLoading(false);
     }
@@ -100,13 +103,13 @@ export const UserList: React.FC = () => {
       render: (user: User) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+            <Button size="sm" variant="ghost" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
               <MoreVertical className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 navigate(`/admin/users/${user.id}`);
               }}
@@ -115,7 +118,7 @@ export const UserList: React.FC = () => {
               View Details
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={(e) => {
+              onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 handleToggleUserStatus(user.id, user.isActive);
               }}
