@@ -5,17 +5,40 @@ import { DataTable } from '../components/admin/shared/DataTable';
 import { FilterPanel } from '../components/admin/shared/FilterPanel';
 import { OrderStatusBadge } from '../components/admin/orders/OrderStatusBadge';
 import { useAdminOrders } from '../hooks/useAdminOrders';
-import { Order } from '../api/adminApi';
-import { Eye } from 'lucide-react';
+import { Order, adminApi } from '../api/adminApi';
+import { Eye, MoreVertical } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { toast } from 'sonner';
 
 export const OrderList: React.FC = () => {
   const [filters, setFilters] = useState({
     status: 'all',
     search: '',
   });
-  const { orders, isLoading } = useAdminOrders(filters);
+  const { orders, isLoading, reload, updateOrderStatus } = useAdminOrders(filters);
   const navigate = useNavigate();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [newStatus, setNewStatus] = useState('');
+  const [refundAmount, setRefundAmount] = useState('');
+  const [refundReason, setRefundReason] = useState('');
 
   const handleFilterChange = (name: string, value: string) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -23,6 +46,35 @@ export const OrderList: React.FC = () => {
 
   const handleReset = () => {
     setFilters({ status: 'all', search: '' });
+  };
+
+  const handleStatusUpdate = async () => {
+    if (!selectedOrder || !newStatus) return;
+    try {
+      await updateOrderStatus(selectedOrder.id.toString(), newStatus);
+      toast.success('Order status updated successfully');
+      setShowStatusDialog(false);
+      setNewStatus('');
+      setSelectedOrder(null);
+      reload();
+    } catch (error) {
+      toast.error('Failed to update order status');
+    }
+  };
+
+  const handleRefund = async () => {
+    if (!selectedOrder || !refundAmount || !refundReason) return;
+    try {
+      await adminApi.processRefund(selectedOrder.id, parseFloat(refundAmount), refundReason);
+      toast.success('Refund processed successfully');
+      setShowRefundDialog(false);
+      setRefundAmount('');
+      setRefundReason('');
+      setSelectedOrder(null);
+      reload();
+    } catch (error) {
+      toast.error('Failed to process refund');
+    }
   };
 
   const columns = [
@@ -54,17 +106,44 @@ export const OrderList: React.FC = () => {
       key: 'actions',
       header: 'Actions',
       render: (order: Order) => (
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={(e: React.MouseEvent) => {
-            e.stopPropagation();
-            navigate(`/admin/orders/${order.id}`);
-          }}
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          View
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+              <MoreVertical className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/admin/orders/${order.id}`);
+              }}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              View Details
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedOrder(order);
+                setNewStatus(order.status);
+                setShowStatusDialog(true);
+              }}
+            >
+              Update Status
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedOrder(order);
+                setRefundAmount(order.total.toString());
+                setShowRefundDialog(true);
+              }}
+            >
+              Process Refund
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];
@@ -116,6 +195,79 @@ export const OrderList: React.FC = () => {
           />
         )}
       </div>
+
+      <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Order Status</DialogTitle>
+            <DialogDescription>
+              Change the status of Order #{selectedOrder?.orderNumber}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="status">New Status</Label>
+              <select
+                id="status"
+                className="w-full mt-1 p-2 border rounded-md"
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+              >
+                <option value="PENDING">Pending</option>
+                <option value="PROCESSING">Processing</option>
+                <option value="SHIPPED">Shipped</option>
+                <option value="DELIVERED">Delivered</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowStatusDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleStatusUpdate}>Update Status</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showRefundDialog} onOpenChange={setShowRefundDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Process Refund</DialogTitle>
+            <DialogDescription>
+              Process a refund for Order #{selectedOrder?.orderNumber}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="refundAmount">Refund Amount</Label>
+              <Input
+                id="refundAmount"
+                type="number"
+                step="0.01"
+                value={refundAmount}
+                onChange={(e) => setRefundAmount(e.target.value)}
+                placeholder="Enter refund amount"
+              />
+            </div>
+            <div>
+              <Label htmlFor="refundReason">Reason</Label>
+              <Input
+                id="refundReason"
+                value={refundReason}
+                onChange={(e) => setRefundReason(e.target.value)}
+                placeholder="Enter refund reason"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRefundDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleRefund}>Process Refund</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };

@@ -188,6 +188,24 @@ export const adminApi = {
     return response.data.data;
   },
 
+  processRefund: async (id: string | number, amount: number, reason: string): Promise<void> => {
+    const response = await apiClient.post<ApiResponse<void>>(`/admin/orders/${id}/refund`, {
+      amount,
+      reason,
+    });
+    return response.data.data;
+  },
+
+  getOrderTimeline: async (id: string | number): Promise<any[]> => {
+    try {
+      const response = await apiClient.get<ApiResponse<any[]>>(`/admin/orders/${id}/timeline`);
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching order timeline:', error);
+      return [];
+    }
+  },
+
   // Products
   getProducts: async (filters?: {
     category?: string;
