@@ -1,7 +1,28 @@
 import axios from 'axios';
 
-// Use environment variable for API base URL or default to the backend port
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1';
+// Detect API base URL based on environment
+const getApiBaseUrl = () => {
+  // Check for explicit environment variable first
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // In Replit, detect the domain from window.location
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    // If running on Replit (has .replit.dev domain)
+    if (hostname.includes('replit.dev')) {
+      return `${protocol}//${hostname}:8080/api/v1`;
+    }
+  }
+  
+  // Default to localhost for local development
+  return 'http://localhost:8080/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Create axios instance with default config
 export const apiClient = axios.create({

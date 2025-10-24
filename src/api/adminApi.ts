@@ -69,13 +69,13 @@ export interface DashboardStats {
   totalRevenue: number;
   totalOrders: number;
   totalCustomers: number;
-  averageOrderValue: number;
+  pendingOrders: number;
   revenueChange: number;
   ordersChange: number;
-  customersChange: number;
-  totalProducts?: number;
-  lowStockProducts?: number;
-  pendingOrders?: number;
+  customersChange?: number;
+  salesData?: SalesData[];
+  recentOrders?: Order[];
+  lowStockProducts?: Product[];
 }
 
 export interface SalesData {

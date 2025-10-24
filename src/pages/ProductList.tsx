@@ -6,6 +6,7 @@ import { FilterPanel } from '../components/admin/shared/FilterPanel';
 import { StockBadge } from '../components/admin/products/StockBadge';
 import { ConfirmDialog } from '../components/admin/shared/ConfirmDialog';
 import { useAdminProducts } from '../hooks/useAdminProducts';
+import { useCategories } from '../hooks/useCategories';
 import { Product } from '../api/adminApi';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -19,6 +20,7 @@ export const ProductList: React.FC = () => {
   });
   const [deleteId, setDeleteId] = useState<string | number | null>(null);
   const { products, isLoading, deleteProduct } = useAdminProducts(filters);
+  const { categories } = useCategories();
   const navigate = useNavigate();
 
   const handleFilterChange = (name: string, value: string) => {
@@ -123,11 +125,10 @@ export const ProductList: React.FC = () => {
       placeholder: 'All Categories',
       options: [
         { value: 'all', label: 'All Categories' },
-        { value: 'Electronics', label: 'Electronics' },
-        { value: 'Clothing', label: 'Clothing' },
-        { value: 'Home & Garden', label: 'Home & Garden' },
-        { value: 'Sports', label: 'Sports' },
-        { value: 'Books', label: 'Books' },
+        ...categories.map(cat => ({
+          value: cat.id.toString(),
+          label: cat.name
+        }))
       ],
     },
   ];

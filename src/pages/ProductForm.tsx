@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '../components/ui/select';
 import { adminApi, Product } from '../api/adminApi';
+import { useCategories } from '../hooks/useCategories';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
 
@@ -22,12 +23,13 @@ export const ProductForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = id !== 'new';
+  const { categories, isLoading: categoriesLoading } = useCategories();
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    category: '',
+    categoryId: '',
     stock: '',
     sku: '',
     isActive: true,
@@ -47,11 +49,11 @@ export const ProductForm: React.FC = () => {
       if (product) {
         setFormData({
           name: product.name,
-          description: product.description,
+          description: product.description || '',
           price: product.price.toString(),
-          category: product.category,
-          stock: product.stock.toString(),
-          sku: product.sku,
+          categoryId: product.categoryId?.toString() || '',
+          stock: product.stockCount?.toString() || '0',
+          sku: product.sku || '',
           isActive: product.isActive,
         });
       }
@@ -62,6 +64,12 @@ export const ProductForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.categoryId) {
+      toast('Please select a category');
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -69,10 +77,10 @@ export const ProductForm: React.FC = () => {
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
-        category: formData.category,
-        stock: parseInt(formData.stock),
+        categoryId: parseInt(formData.categoryId),
+        stockCount: parseInt(formData.stock),
         sku: formData.sku,
-        images: [],
+        image: '',
         isActive: formData.isActive,
       };
 
@@ -157,18 +165,19 @@ export const ProductForm: React.FC = () => {
                 <div className="space-y-2">
                   <Label htmlFor="category">Category</Label>
                   <Select
-                    value={formData.category}
-                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    value={formData.categoryId}
+                    onValueChange={(value) => setFormData({ ...formData, categoryId: value })}
+                    disabled={categoriesLoading}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
+                      <SelectValue placeholder={categoriesLoading ? "Loading..." : "Select category"} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Electronics">Electronics</SelectItem>
-                      <SelectItem value="Clothing">Clothing</SelectItem>
-                      <SelectItem value="Home & Garden">Home & Garden</SelectItem>
-                      <SelectItem value="Sports">Sports</SelectItem>
-                      <SelectItem value="Books">Books</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id.toString()}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
