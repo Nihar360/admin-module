@@ -19,6 +19,7 @@ export const ProductList: React.FC = () => {
     search: '',
   });
   const [deleteId, setDeleteId] = useState<string | number | null>(null);
+  const [confirmStep, setConfirmStep] = useState<1 | 2>(1);
   const { products, isLoading, deleteProduct } = useAdminProducts(filters);
   const { categories } = useCategories();
   const navigate = useNavigate();
@@ -31,14 +32,30 @@ export const ProductList: React.FC = () => {
     setFilters({ category: 'all', search: '' });
   };
 
+  const handleConfirmClick = () => {
+    if (confirmStep === 1) {
+      setConfirmStep(2);
+    } else {
+      handleDelete();
+    }
+  };
+
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
       await deleteProduct(deleteId);
-      toast('Product deleted successfully');
+      toast.success('Product deleted successfully');
       setDeleteId(null);
+      setConfirmStep(1);
     } catch (error) {
-      toast('Failed to delete product');
+      toast.error('Failed to delete product');
+    }
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      setDeleteId(null);
+      setConfirmStep(1);
     }
   };
 
@@ -160,11 +177,15 @@ export const ProductList: React.FC = () => {
 
       <ConfirmDialog
         open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
-        title="Delete Product"
-        description="Are you sure you want to delete this product? This action cannot be undone."
-        onConfirm={handleDelete}
-        confirmText="Delete"
+        onOpenChange={handleDialogClose}
+        title={confirmStep === 1 ? "Delete Product" : "Final Confirmation"}
+        description={
+          confirmStep === 1
+            ? "Are you sure you want to delete this product?"
+            : "This action cannot be undone. All product data will be permanently deleted."
+        }
+        onConfirm={handleConfirmClick}
+        confirmText={confirmStep === 1 ? "Continue" : "Delete Permanently"}
       />
     </AdminLayout>
   );

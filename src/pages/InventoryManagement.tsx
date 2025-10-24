@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from '../components/ui/dialog';
 import { AlertCircle, PackagePlus, PackageMinus } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export const InventoryManagement: React.FC = () => {
   const { products, isLoading, updateProduct } = useAdminProducts();
@@ -24,8 +24,8 @@ export const InventoryManagement: React.FC = () => {
   const [adjustmentType, setAdjustmentType] = useState<'add' | 'remove'>('add');
   const [quantity, setQuantity] = useState('');
 
-  const lowStockProducts = products.filter((p) => p.stock < 10 && p.stock > 0);
-  const outOfStockProducts = products.filter((p) => p.stock === 0);
+  const lowStockProducts = products.filter((p) => p.stockCount < 10 && p.stockCount > 0);
+  const outOfStockProducts = products.filter((p) => p.stockCount === 0);
 
   const handleAdjustment = async () => {
     if (!selectedProduct || !quantity) return;
@@ -33,21 +33,21 @@ export const InventoryManagement: React.FC = () => {
     const adjustment = parseInt(quantity);
     const newStock =
       adjustmentType === 'add'
-        ? selectedProduct.stock + adjustment
-        : selectedProduct.stock - adjustment;
+        ? selectedProduct.stockCount + adjustment
+        : selectedProduct.stockCount - adjustment;
 
     if (newStock < 0) {
-      toast('Stock cannot be negative');
+      toast.error('Stock cannot be negative');
       return;
     }
 
     try {
-      await updateProduct(selectedProduct.id, { stock: newStock });
-      toast('Stock updated successfully');
+      await updateProduct(selectedProduct.id, { stockCount: newStock });
+      toast.success('Stock updated successfully');
       setShowDialog(false);
       setQuantity('');
     } catch (error) {
-      toast('Failed to update stock');
+      toast.error('Failed to update stock');
     }
   };
 
@@ -67,12 +67,12 @@ export const InventoryManagement: React.FC = () => {
       header: 'Category',
     },
     {
-      key: 'stock',
+      key: 'stockCount',
       header: 'Current Stock',
       render: (product: Product) => (
         <div className="flex items-center gap-2">
-          <span>{product.stock}</span>
-          <StockBadge stock={product.stock} />
+          <span>{product.stockCount}</span>
+          <StockBadge stock={product.stockCount} />
         </div>
       ),
     },
@@ -137,9 +137,9 @@ export const InventoryManagement: React.FC = () => {
                     >
                       <div>
                         <div>{product.name}</div>
-                        <div className="text-sm text-gray-500">Stock: {product.stock}</div>
+                        <div className="text-sm text-gray-500">Stock: {product.stockCount}</div>
                       </div>
-                      <StockBadge stock={product.stock} />
+                      <StockBadge stock={product.stockCount} />
                     </div>
                   ))
                 )}
@@ -168,7 +168,7 @@ export const InventoryManagement: React.FC = () => {
                         <div>{product.name}</div>
                         <div className="text-sm text-gray-500">{product.sku}</div>
                       </div>
-                      <StockBadge stock={product.stock} />
+                      <StockBadge stock={product.stockCount} />
                     </div>
                   ))
                 )}
@@ -198,7 +198,7 @@ export const InventoryManagement: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Current Stock</p>
-              <p>{selectedProduct?.stock}</p>
+              <p>{selectedProduct?.stockCount}</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="quantity">Quantity</Label>

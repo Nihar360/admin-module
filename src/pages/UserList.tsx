@@ -4,9 +4,16 @@ import { AdminLayout } from '../components/admin/layout/AdminLayout';
 import { DataTable } from '../components/admin/shared/DataTable';
 import { FilterPanel } from '../components/admin/shared/FilterPanel';
 import { adminApi, User } from '../api/adminApi';
-import { Eye } from 'lucide-react';
+import { Eye, MoreVertical } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 export const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -40,42 +47,50 @@ export const UserList: React.FC = () => {
     setFilters({ status: 'all', search: '' });
   };
 
+  const handleToggleUserStatus = async (userId: number, currentStatus: boolean) => {
+    try {
+      await adminApi.updateUser(userId, { isActive: !currentStatus });
+      toast.success(`User ${!currentStatus ? 'activated' : 'deactivated'} successfully`);
+      loadUsers();
+    } catch (error) {
+      toast.error('Failed to update user status');
+    }
+  };
+
   const columns = [
     {
-      key: 'name',
+      key: 'fullName',
       header: 'Customer',
       render: (user: User) => (
         <div>
-          <div>{user.name}</div>
+          <div>{user.fullName}</div>
           <div className="text-sm text-gray-500">{user.email}</div>
         </div>
       ),
     },
     {
-      key: 'phone',
+      key: 'mobile',
       header: 'Phone',
+      render: (user: User) => user.mobile || 'N/A',
     },
     {
-      key: 'totalOrders',
-      header: 'Orders',
-      render: (user: User) => user.totalOrders ?? 0,
+      key: 'role',
+      header: 'Role',
+      render: (user: User) => (
+        <Badge variant="outline">{user.role}</Badge>
+      ),
     },
     {
-      key: 'totalSpent',
-      header: 'Total Spent',
-      render: (user: User) => `$${(user.totalSpent ?? 0).toFixed(2)}`,
-    },
-    {
-      key: 'joinedAt',
+      key: 'createdAt',
       header: 'Joined',
-      render: (user: User) => new Date(user.joinedAt).toLocaleDateString(),
+      render: (user: User) => new Date(user.createdAt).toLocaleDateString(),
     },
     {
-      key: 'status',
+      key: 'isActive',
       header: 'Status',
       render: (user: User) => (
-        <Badge variant={user.status === 'active' ? 'default' : 'destructive'}>
-          {user.status}
+        <Badge variant={user.isActive ? 'default' : 'destructive'}>
+          {user.isActive ? 'Active' : 'Blocked'}
         </Badge>
       ),
     },
@@ -83,17 +98,32 @@ export const UserList: React.FC = () => {
       key: 'actions',
       header: 'Actions',
       render: (user: User) => (
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/admin/users/${user.id}`);
-          }}
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          View
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+              <MoreVertical className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/admin/users/${user.id}`);
+              }}
+            >
+              <Eye className="w-4 h-4 mr-2" />
+              View Details
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleUserStatus(user.id, user.isActive);
+              }}
+            >
+              {user.isActive ? 'Deactivate User' : 'Activate User'}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];
