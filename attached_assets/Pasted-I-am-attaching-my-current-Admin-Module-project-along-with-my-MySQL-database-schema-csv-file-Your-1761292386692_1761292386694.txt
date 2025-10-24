@@ -1,0 +1,110 @@
+I am attaching my current Admin Module project along with my MySQL database schema (.csv file).
+Your task is to make all modules fetch and update data directly from the database (no hardcoded values).
+Below are the exact requirements for each section:
+
+1. Dashboard
+
+Fetch all data dynamically from the database.
+
+Total Orders: Display the total count of orders.
+
+Total Customers: Display the total count of users/customers.
+
+Recent Orders: Display all recent orders (latest first).
+
+2. Notification
+
+Implement a notification system that triggers whenever a new order is placed.
+
+Notifications should also appear in the header notification icon dynamically.
+
+3. Orders
+
+Display all orders fetched from the database.
+
+Add search and filter by order status functionality.
+
+Each order card/row should have “Take Action” functionality (update order status, view details, etc.).
+
+4. Products
+
+Remove all hardcoded categories and fetch actual categories from the database.
+
+In the product list, show the category name for each product.
+
+On Edit Product, load all product data from the database before editing.
+
+Save changes and reflect updates in the database in real time.
+
+The Delete Product button should show a two-step confirmation before deleting a product.
+
+5. Inventory
+
+Display category for each product.
+
+Replace “In Stock” label with the actual stock number from the database.
+
+Allow stock number to be increased or decreased from the “Actions” column.
+
+6. Coupons
+
+Fetch all coupons from the database.
+
+Implement Add Coupon functionality (data should be saved in the database with constraints).
+
+Coupon should actually affect the order total during checkout.
+
+Columns: Code | Type | Discount | Usage | Expires | Status | Actions — all must work properly.
+
+7. Users
+
+Fetch all user data directly from the database.
+
+Columns: Customer | Phone | Orders | Total Spent | Joined | Status | Actions.
+
+Fix the redirect-to-login issue when clicking “Actions”.
+
+Implement user management functionality under Actions (e.g., activate/deactivate user, view details, etc.).
+
+8. Reports
+
+Remove all hardcoded data.
+
+Calculate:
+
+Total Revenue
+
+Total Orders
+
+Average Order Value
+— all based on database data.
+
+“Sales by Category” should be dynamically calculated from order and product tables.
+
+9. Settings
+
+Ensure all functionalities under Profile, Notifications, and Security are fully functional and persist data to the database.
+
+Header
+
+The Notification icon in the header should display live notifications (e.g., new orders).
+
+Additional Notes
+
+Before implementing, create a proper planning documentation describing:
+
+Each module’s database interaction plan.
+
+Any database schema changes required (new tables, altered columns, new queries, etc.).
+
+API endpoints or SQL queries to be added/modified.
+
+The app uses a local MySQL database, configured in application.properties.
+
+Use the provided database schema (.csv) to understand existing tables and relationships.
+
+Remove "In stock" lables insted i want acctual number of stock
+
+Goal
+
+Make the Admin Module 100% dynamic, with real-time database integration for all functionalities including dashboard stats, notifications, CRUD operations, user management, and analytics.

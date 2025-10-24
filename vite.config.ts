@@ -54,8 +54,17 @@ export default defineConfig({
     outDir: "build",
   },
   server: {
-    port: 5000,
     host: "0.0.0.0",
+    port: 5000,
     strictPort: true,
+    hmr: {
+      clientPort: 443,
+      protocol: "wss",
+    },
+    // 👇 Add this block
+    allowedHosts: [
+      "c3d58f80-d7c5-4f8e-af2b-6001780d8d96-00-1e6yt22i8hfro.picard.replit.dev",
+      "*.replit.dev",
+    ],
   },
 });
