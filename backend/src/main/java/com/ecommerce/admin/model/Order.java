@@ -4,9 +4,11 @@ import com.ecommerce.admin.model.enums.OrderStatus;
 import com.ecommerce.admin.model.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +18,31 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Named EntityGraph for solving N+1 queries
+@NamedEntityGraph(
+    name = "Order.withDetails",
+    attributeNodes = {
+        @NamedAttributeNode("user"),
+        @NamedAttributeNode(value = "items", subgraph = "items-subgraph"),
+        @NamedAttributeNode("shippingAddress")
+    },
+    subgraphs = {
+        @NamedSubgraph(
+            name = "items-subgraph",
+            attributeNodes = {
+                @NamedAttributeNode("product")
+            }
+        )
+    }
+)
+// Additional named graph without items (for lighter queries)
+@NamedEntityGraph(
+    name = "Order.withUserAndAddress",
+    attributeNodes = {
+        @NamedAttributeNode("user"),
+        @NamedAttributeNode("shippingAddress")
+    }
+)
 public class Order {
     
     @Id
@@ -37,8 +64,11 @@ public class Order {
     @Column(name = "payment_method", nullable = false)
     private PaymentMethod paymentMethod;
     
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderItem> items;
+    // Use ArrayList for better performance and add @BatchSize as fallback
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @BatchSize(size = 10) // Batch fetch items if lazy loading occurs
+    @Builder.Default
+    private List<OrderItem> items = new ArrayList<>();
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_address_id", nullable = false)
@@ -51,6 +81,7 @@ public class Order {
     private BigDecimal shipping;
     
     @Column(nullable = false, precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal discount = BigDecimal.ZERO;
     
     @Column(nullable = false, precision = 10, scale = 2)
@@ -68,7 +99,7 @@ public class Order {
     @Column(length = 1000)
     private String notes;
     
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     
     @Column(name = "updated_at")

@@ -41,9 +41,9 @@ export const ProductList: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (!deleteId) return;
+    if (deleteId == null) return;
     try {
-      await deleteProduct(deleteId);
+      await deleteProduct(String(deleteId));
       toast.success('Product deleted successfully');
       setDeleteId(null);
       setConfirmStep(1);
@@ -171,7 +171,7 @@ export const ProductList: React.FC = () => {
         {isLoading ? (
           <div className="text-center py-8">Loading products...</div>
         ) : (
-          <DataTable data={products} columns={columns} />
+          <DataTable data={Array.isArray(products) ? products : []} columns={columns} />
         )}
       </div>
 

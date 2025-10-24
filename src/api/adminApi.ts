@@ -105,8 +105,11 @@ export interface PageResponse<T> {
   content: T[];
   totalElements: number;
   totalPages: number;
-  pageNumber: number;
-  pageSize: number;
+  currentPage?: number;
+  pageNumber?: number;
+  pageSize?: number;
+  first?: boolean;
+  last?: boolean;
 }
 
 // API functions
@@ -149,13 +152,13 @@ export const adminApi = {
     return response.data.data || [];
   },
 
-  // Orders
+  // Orders - FIXED VERSION
   getOrders: async (filters?: {
     status?: string;
     search?: string;
     page?: number;
     limit?: number;
-  }): Promise<{ orders: Order[]; total: number }> => {
+  }): Promise<PageResponse<Order>> => {
     const response = await apiClient.get<ApiResponse<PageResponse<Order>>>('/admin/orders', {
       params: {
         status: filters?.status !== 'all' ? filters?.status : undefined,
@@ -164,10 +167,11 @@ export const adminApi = {
         size: filters?.limit || 10,
       },
     });
-    return {
-      orders: response.data.data.content,
-      total: response.data.data.totalElements,
-    };
+    
+    console.log('📦 API Response:', response.data);
+    console.log('📋 Orders Content:', response.data.data.content);
+    
+    return response.data.data;
   },
 
   getOrder: async (id: string | number): Promise<Order | null> => {
@@ -190,7 +194,7 @@ export const adminApi = {
 
   processRefund: async (id: string | number, amount: number, reason: string): Promise<void> => {
     const response = await apiClient.post<ApiResponse<void>>(`/admin/orders/${id}/refund`, {
-      amount,
+      refundAmount: amount,
       reason,
     });
     return response.data.data;
@@ -214,7 +218,7 @@ export const adminApi = {
     inStock?: boolean;
     page?: number;
     size?: number;
-  }): Promise<Product[]> => {
+  }): Promise<PageResponse<Product>> => {
     const response = await apiClient.get<ApiResponse<PageResponse<Product>>>('/admin/products', {
       params: {
         categoryId: filters?.categoryId,
@@ -224,7 +228,7 @@ export const adminApi = {
         size: filters?.size || 50,
       },
     });
-    return response.data.data.content;
+    return response.data.data;
   },
 
   getProduct: async (id: string | number): Promise<Product | null> => {
@@ -322,7 +326,7 @@ export const adminApi = {
   },
 
   // Users
-  getUsers: async (filters?: { search?: string; status?: string }): Promise<User[]> => {
+  getUsers: async (filters?: { search?: string; status?: string }): Promise<PageResponse<User>> => {
     const response = await apiClient.get<ApiResponse<PageResponse<User>>>('/admin/users', {
       params: {
         search: filters?.search,
@@ -331,7 +335,7 @@ export const adminApi = {
         size: 100,
       },
     });
-    return response.data.data.content;
+    return response.data.data;
   },
 
   getUser: async (id: string | number): Promise<User | null> => {
@@ -400,7 +404,7 @@ export const adminApi = {
     search?: string;
     page?: number;
     size?: number;
-  }): Promise<Product[]> => {
+  }): Promise<PageResponse<Product>> => {
     const response = await apiClient.get<ApiResponse<PageResponse<Product>>>('/admin/inventory', {
       params: {
         categoryId: filters?.categoryId,
@@ -409,7 +413,7 @@ export const adminApi = {
         size: filters?.size || 20,
       },
     });
-    return response.data.data.content;
+    return response.data.data;
   },
 
   getLowStockProducts: async (): Promise<Product[]> => {

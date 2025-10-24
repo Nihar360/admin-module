@@ -51,7 +51,7 @@ export const OrderList: React.FC = () => {
   const handleStatusUpdate = async () => {
     if (!selectedOrder || !newStatus) return;
     try {
-      await updateOrderStatus(selectedOrder.id.toString(), newStatus);
+      await updateOrderStatus(selectedOrder.id, newStatus);
       toast.success('Order status updated successfully');
       setShowStatusDialog(false);
       setNewStatus('');
@@ -108,14 +108,17 @@ export const OrderList: React.FC = () => {
       render: (order: Order) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="ghost" onClick={(e) => e.stopPropagation()}>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
               <MoreVertical className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
+              onSelect={() => {
                 navigate(`/admin/orders/${order.id}`);
               }}
             >
@@ -123,8 +126,7 @@ export const OrderList: React.FC = () => {
               View Details
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
+              onSelect={() => {
                 setSelectedOrder(order);
                 setNewStatus(order.status);
                 setShowStatusDialog(true);
@@ -133,8 +135,7 @@ export const OrderList: React.FC = () => {
               Update Status
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
+              onSelect={() => {
                 setSelectedOrder(order);
                 setRefundAmount(order.total.toString());
                 setShowRefundDialog(true);
@@ -162,11 +163,11 @@ export const OrderList: React.FC = () => {
       placeholder: 'All Statuses',
       options: [
         { value: 'all', label: 'All Statuses' },
-        { value: 'pending', label: 'Pending' },
-        { value: 'processing', label: 'Processing' },
-        { value: 'shipped', label: 'Shipped' },
-        { value: 'delivered', label: 'Delivered' },
-        { value: 'cancelled', label: 'Cancelled' },
+        { value: 'PENDING', label: 'Pending' },
+        { value: 'PROCESSING', label: 'Processing' },
+        { value: 'SHIPPED', label: 'Shipped' },
+        { value: 'DELIVERED', label: 'Delivered' },
+        { value: 'CANCELLED', label: 'Cancelled' },
       ],
     },
   ];
